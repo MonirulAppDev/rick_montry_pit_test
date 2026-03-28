@@ -6,8 +6,8 @@ A Flutter application that explores the Rick and Morty universe, built with **Cl
 
 ### Prerequisites
 
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) (>= 3.10.0)
-- [Dart SDK](https://dart.dev/get-started/dart-sdk)
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (>= 3.38.1)
+- [Dart SDK](https://dart.dev/get-started/dart-sdk) (>= 3.10.0)
 
 ### Setup Instructions
 
