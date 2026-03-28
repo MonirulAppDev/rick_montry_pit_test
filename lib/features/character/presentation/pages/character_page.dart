@@ -16,6 +16,8 @@ class CharacterPage extends ConsumerStatefulWidget {
 
 class _CharacterPageState extends ConsumerState<CharacterPage> {
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -56,8 +59,38 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Characters'),
-        centerTitle: true,
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search characters...',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.white38),
+                ),
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+                onChanged: (value) {
+                  ref.read(charactersProvider.notifier).updateSearch(value);
+                },
+              )
+            : const Text('Characters'),
+        centerTitle: !_isSearching,
+        actions: [
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                if (_isSearching) {
+                  _isSearching = false;
+                  _searchController.clear();
+                  ref.read(charactersProvider.notifier).updateSearch('');
+                } else {
+                  _isSearching = true;
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [

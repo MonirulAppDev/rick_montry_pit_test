@@ -154,11 +154,18 @@ class CharacterNotifier extends StateNotifier<CharacterState> {
     state = state.copyWith(
       statusFilter: newStatus,
       speciesFilter: newSpecies,
-      searchName: null, // Ensure name filter is never used
     );
 
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 200), () {
+      fetchCharacters();
+    });
+  }
+
+  void updateSearch(String name) {
+    state = state.copyWith(searchName: name.isEmpty ? null : name);
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       fetchCharacters();
     });
   }
