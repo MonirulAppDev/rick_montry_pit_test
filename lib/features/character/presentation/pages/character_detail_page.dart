@@ -29,12 +29,20 @@ class CharacterDetailPage extends StatelessWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    CachedNetworkImage(
-                      imageUrl: character.image,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(color: Colors.white10),
-                      errorWidget: (context, url, error) => const Icon(Icons.error),
-                    ),
+                    character.image.isEmpty
+                        ? Image.asset(
+                            'assets/images/No_Image_Available.jpg',
+                            fit: BoxFit.cover,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: character.image,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(color: Colors.white10),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/No_Image_Available.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                     const DecoratedBox(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(

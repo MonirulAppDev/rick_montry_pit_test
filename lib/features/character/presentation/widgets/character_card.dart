@@ -41,22 +41,32 @@ class CharacterCard extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                       child: Hero(
                         tag: 'character-${character.id}',
-                        child: CachedNetworkImage(
-                          imageUrl: character.image,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          placeholder: (context, url) => Container(
-                            color: Colors.white10,
-                            child: const Center(
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                        child: character.image.isEmpty
+                            ? Image.asset(
+                                'assets/images/No_Image_Available.jpg',
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: character.image,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                placeholder: (context, url) => Container(
+                                  color: Colors.white10,
+                                  child: const Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    ),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Image.asset(
+                                  'assets/images/No_Image_Available.jpg',
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
                               ),
-                            ),
-                          ),
-                          errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red),
-                        ),
                       ),
                     ),
                     Positioned(

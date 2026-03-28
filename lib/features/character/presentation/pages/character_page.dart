@@ -30,14 +30,28 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
-      ref.read(charactersProvider.notifier).loadMore();
+    if (_scrollController.hasClients) {
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 400) {
+        ref.read(charactersProvider.notifier).loadMore();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final characterState = ref.watch(charactersProvider);
+
+    // Listen to state changes to handle cases where new data arrives and we 
+    // are still near the bottom, but no scroll notification was triggered.
+    ref.listen(charactersProvider, (previous, next) {
+      if (previous?.isLoadingMore == true && next.isLoadingMore == false) {
+        // If we finished loading more, check if we're still near the bottom 
+        // in case the newly added items didn't push the threshold far enough.
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _onScroll();
+        });
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
