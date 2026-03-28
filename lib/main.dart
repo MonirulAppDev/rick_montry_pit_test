@@ -11,9 +11,5 @@ void main() async {
   await Hive.openBox('characters');
   await dotenv.load(fileName: ".env");
   await di.init();
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }

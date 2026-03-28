@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/themes/base_theme.dart';
 import 'features/character/presentation/pages/character_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -8,26 +9,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Rick and Morty Clean Architecture',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF1E1E26),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF9D50BB),
-          brightness: Brightness.dark,
-          surface: const Color(0xFF2C2C34),
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E1E26),
-          elevation: 0,
-          centerTitle: false,
-          titleTextStyle: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        useMaterial3: true,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: BaseTheme.lightTheme,
+      darkTheme: BaseTheme.darkTheme,
+      themeMode: ThemeMode.dark,
       home: const CharacterPage(),
     );
   }
