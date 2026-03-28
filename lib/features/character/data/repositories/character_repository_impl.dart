@@ -21,23 +21,33 @@ class CharacterRepositoryImpl implements CharacterRepository {
 
   @override
   Future<Either<BaseResponse, List<Character>>> getAllCharacters() async {
-    try {
-      // 1. Try to fetch from remote
-      final remoteCharacters = await remoteDataSource.getAllCharacters();
-      
-      // 2. If successful, cache the data for future offline use
-      await localDataSource.cacheCharacters(remoteCharacters);
-      
-      final entities = remoteCharacters.map((model) => model.toEntity()).toList();
-      return Right(entities);
-    } catch (e, stackTrace) {
-      // 3. On any failure (e.g., no internet, timeout), attempt to get local cached data
+    final bool isConnected = await networkInfo.isConnected;
+    
+    if (isConnected) {
+      try {
+        final remoteCharacters = await remoteDataSource.getAllCharacters();
+        await localDataSource.cacheCharacters(remoteCharacters);
+        final entities = remoteCharacters.map((model) => model.toEntity()).toList();
+        return Right(entities);
+      } catch (e, stackTrace) {
+        // Even if connected, remote fetch might fail (timeout, server error, etc.)
+        // Fallback to local cache
+        try {
+          final localCharacters = await localDataSource.getLastCharacters();
+          final entities = localCharacters.map((model) => model.toEntity()).toList();
+          return Right(entities);
+        } catch (_) {
+          return Left(ErrorHandler.error(e, stackTrace));
+        }
+      }
+    } else {
+      // Not connected, immediately go to local cache
       try {
         final localCharacters = await localDataSource.getLastCharacters();
         final entities = localCharacters.map((model) => model.toEntity()).toList();
         return Right(entities);
-      } catch (_) {
-        // 4. If local fetch also fails (no cache), return the original error to the user
+      } catch (e, stackTrace) {
+        // No internet and no cache
         return Left(ErrorHandler.error(e, stackTrace));
       }
     }
