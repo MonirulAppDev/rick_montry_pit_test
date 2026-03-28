@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../domain/entities/character.dart';
-import '../providers/favorite_provider.dart';
+import 'package:rick_montry_pit_test/features/character/domain/entities/character.dart';
+import 'package:rick_montry_pit_test/features/character/presentation/providers/character_provider.dart';
+import 'package:rick_montry_pit_test/features/character/presentation/providers/favorite_provider.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/delete_character_override.dart';
+import 'package:rick_montry_pit_test/features/character/data/datasources/character_override_local_data_source.dart';
+import 'package:rick_montry_pit_test/injection_container.dart';
 
 import 'package:rick_montry_pit_test/features/character/presentation/pages/edit_character_page.dart';
 
@@ -27,6 +31,7 @@ class _CharacterDetailPageState extends ConsumerState<CharacterDetailPage> {
   @override
   Widget build(BuildContext context) {
     final isFavorite = ref.watch(favoriteProvider.notifier).isFavorite(_character.id);
+    final hasOverride = sl<CharacterOverrideLocalDataSource>().hasOverride(_character.id);
     ref.watch(favoriteProvider); // Rebuild when favorites change
 
     return Scaffold(
@@ -36,6 +41,22 @@ class _CharacterDetailPageState extends ConsumerState<CharacterDetailPage> {
             expandedHeight: 400.0,
             pinned: true,
             actions: [
+              if (hasOverride)
+                IconButton(
+                  onPressed: () async {
+                    final result = await sl<DeleteCharacterOverride>().call(_character.id);
+                    result.fold(
+                      (failure) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failure.message))),
+                      (_) {
+                        ref.read(charactersProvider.notifier).fetchCharacters(isInitial: false);
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Reset to original data')));
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.restore_rounded, color: Colors.white),
+                  tooltip: 'Reset to original',
+                ),
               IconButton(
                 onPressed: () async {
                   final updated = await Navigator.push<Character>(

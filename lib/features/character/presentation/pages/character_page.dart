@@ -55,24 +55,101 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
     });
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Characters'), centerTitle: true),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final crossAxisCount = constraints.maxWidth > 900
-              ? 5
-              : constraints.maxWidth > 600
-              ? 3
-              : 2;
-
-          return RefreshIndicator(
-            color: const Color(0xFF6B38FB),
-            onRefresh: () async {
-              await ref.read(charactersProvider.notifier).fetchCharacters();
-            },
-            child: _buildBody(characterState, crossAxisCount),
-          );
-        },
+      appBar: AppBar(
+        title: const Text('Characters'),
+        centerTitle: true,
       ),
+      body: Column(
+        children: [
+          _buildFilterBar(characterState),
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final crossAxisCount = constraints.maxWidth > 900
+                    ? 5
+                    : constraints.maxWidth > 600
+                    ? 3
+                    : 2;
+      
+                return RefreshIndicator(
+                  color: const Color(0xFF6B38FB),
+                  onRefresh: () async {
+                    await ref.read(charactersProvider.notifier).fetchCharacters();
+                  },
+                  child: _buildBody(characterState, crossAxisCount),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterBar(CharacterState state) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E1E26),
+        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            _buildFilterGroup(
+              'Status',
+              ['Alive', 'Dead', 'Unknown'],
+              state.statusFilter,
+              (val) => ref.read(charactersProvider.notifier).updateFilters(status: val),
+            ),
+            const SizedBox(width: 16),
+            Container(width: 1, height: 24, color: Colors.white10),
+            const SizedBox(width: 16),
+            _buildFilterGroup(
+              'Species',
+              ['Human', 'Alien'],
+              state.speciesFilter,
+              (val) => ref.read(charactersProvider.notifier).updateFilters(species: val),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterGroup(String title, List<String> options, String? currentValue, Function(String) onSelected) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          '$title: ',
+          style: const TextStyle(color: Colors.white38, fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(width: 8),
+        ...options.map((option) {
+          final isSelected = currentValue == option;
+          return Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: ChoiceChip(
+              label: Text(option),
+              selected: isSelected,
+              onSelected: (_) => onSelected(option),
+              selectedColor: const Color(0xFF6B38FB),
+              backgroundColor: Colors.white.withOpacity(0.05),
+              showCheckmark: false,
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : Colors.white60,
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          );
+        }).toList(),
+      ],
     );
   }
 
@@ -92,7 +169,9 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
     }
 
     if (state.errorMessage != null && state.characters.isEmpty) {
+      final isOffline = state.errorMessage!.toLowerCase().contains('internet');
       return OfflineWidget(
+        title: isOffline ? 'Oops! You\'re Offline' : 'Something went wrong',
         message: state.errorMessage!,
         onRetry: () => ref.read(charactersProvider.notifier).fetchCharacters(),
       );
@@ -100,7 +179,8 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
 
     if (state.characters.isEmpty) {
       return OfflineWidget(
-        message: 'No characters found.',
+        title: 'No Characters',
+        message: 'We couldn\'t find any characters matching your filters.',
         onRetry: () => ref.read(charactersProvider.notifier).fetchCharacters(),
       );
     }

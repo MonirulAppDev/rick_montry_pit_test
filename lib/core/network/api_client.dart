@@ -12,5 +12,8 @@ abstract class ApiClient {
   @GET("/character")
   Future<BaseResponse<List<CharacterModel>>> getCharacters(
     @Query("page") int? page,
+    @Query("name") String? name,
+    @Query("status") String? status,
+    @Query("species") String? species,
   );
 }

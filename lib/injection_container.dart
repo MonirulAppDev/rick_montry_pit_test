@@ -10,6 +10,7 @@ import 'package:rick_montry_pit_test/features/character/data/datasources/charact
 import 'package:rick_montry_pit_test/features/character/data/datasources/character_remote_data_source.dart';
 import 'package:rick_montry_pit_test/features/character/data/repositories/character_repository_impl.dart';
 import 'package:rick_montry_pit_test/features/character/domain/repositories/character_repository.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/delete_character_override.dart';
 import 'package:rick_montry_pit_test/features/character/domain/usecases/get_all_characters.dart';
 import 'package:rick_montry_pit_test/features/character/data/datasources/favorite_local_data_source.dart';
 import 'package:rick_montry_pit_test/features/character/data/repositories/favorite_repository_impl.dart';
@@ -56,6 +57,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ToggleFavorite(sl()));
   sl.registerLazySingleton(() => GetFavoriteCharacters(sl()));
   sl.registerLazySingleton(() => UpdateCharacterOverride(sl()));
+  sl.registerLazySingleton(() => DeleteCharacterOverride(sl()));
 
   // Repository
   sl.registerLazySingleton<CharacterRepository>(

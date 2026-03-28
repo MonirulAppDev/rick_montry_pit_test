@@ -49,7 +49,7 @@ void main() {
         dioAdapter.onGet(path, (server) => server.reply(200, mockResponse));
 
         // act
-        final result = await apiClient.getCharacters(null);
+        final result = await apiClient.getCharacters(null, null, null, null);
 
         // assert
         expect(result.data, isNotNull);
@@ -67,7 +67,7 @@ void main() {
       dioAdapter.onGet(path, (server) => server.reply(200, mockResponse));
 
       // act
-      final result = await apiClient.getCharacters(null);
+      final result = await apiClient.getCharacters(null, null, null, null);
 
       // assert
       expect(result.data, isEmpty);

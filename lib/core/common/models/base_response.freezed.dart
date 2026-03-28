@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BaseResponse<T> {
 
-@JsonKey(name: 'data') T? get data;@JsonKey(name: 'status_code') int get statusCode; String get message;
+@JsonKey(name: 'results') T? get data;@JsonKey(name: 'status_code') int get statusCode; String get message;
 /// Create a copy of BaseResponse
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $BaseResponseCopyWith<T,$Res>  {
   factory $BaseResponseCopyWith(BaseResponse<T> value, $Res Function(BaseResponse<T>) _then) = _$BaseResponseCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'data') T? data,@JsonKey(name: 'status_code') int statusCode, String message
+@JsonKey(name: 'results') T? data,@JsonKey(name: 'status_code') int statusCode, String message
 });
 
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'data')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'results')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BaseResponse() when $default != null:
 return $default(_that.data,_that.statusCode,_that.message);case _:
@@ -176,7 +176,7 @@ return $default(_that.data,_that.statusCode,_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'data')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'results')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)  $default,) {final _that = this;
 switch (_that) {
 case _BaseResponse():
 return $default(_that.data,_that.statusCode,_that.message);case _:
@@ -196,7 +196,7 @@ return $default(_that.data,_that.statusCode,_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'data')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'results')  T? data, @JsonKey(name: 'status_code')  int statusCode,  String message)?  $default,) {final _that = this;
 switch (_that) {
 case _BaseResponse() when $default != null:
 return $default(_that.data,_that.statusCode,_that.message);case _:
@@ -211,10 +211,10 @@ return $default(_that.data,_that.statusCode,_that.message);case _:
 @JsonSerializable(genericArgumentFactories: true)
 
 class _BaseResponse<T> implements BaseResponse<T> {
-  const _BaseResponse({@JsonKey(name: 'data') this.data, @JsonKey(name: 'status_code') this.statusCode = 0, this.message = ''});
+  const _BaseResponse({@JsonKey(name: 'results') this.data, @JsonKey(name: 'status_code') this.statusCode = 0, this.message = ''});
   factory _BaseResponse.fromJson(Map<String, dynamic> json,T Function(Object?) fromJsonT) => _$BaseResponseFromJson(json,fromJsonT);
 
-@override@JsonKey(name: 'data') final  T? data;
+@override@JsonKey(name: 'results') final  T? data;
 @override@JsonKey(name: 'status_code') final  int statusCode;
 @override@JsonKey() final  String message;
 
@@ -251,7 +251,7 @@ abstract mixin class _$BaseResponseCopyWith<T,$Res> implements $BaseResponseCopy
   factory _$BaseResponseCopyWith(_BaseResponse<T> value, $Res Function(_BaseResponse<T>) _then) = __$BaseResponseCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'data') T? data,@JsonKey(name: 'status_code') int statusCode, String message
+@JsonKey(name: 'results') T? data,@JsonKey(name: 'status_code') int statusCode, String message
 });
 
 

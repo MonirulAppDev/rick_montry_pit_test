@@ -35,41 +35,45 @@ class CharacterRepositoryImpl implements CharacterRepository {
   }
 
   @override
-  Future<Either<BaseResponse, List<Character>>> getAllCharacters(int page) async {
-    final bool isConnected = await networkInfo.isConnected;
-    
-    if (isConnected) {
-      try {
-        final remoteCharacters = await remoteDataSource.getAllCharacters(page);
-        
-        await localDataSource.cacheCharacters(remoteCharacters);
-        
-        final entities = remoteCharacters.map((model) => model.toEntity()).toList();
-        return Right(_applyOverrides(entities));
-      } catch (e, stackTrace) {
-        // Fallback to local cache only for the first page
-        if (page == 1) {
-          try {
-            final localCharacters = await localDataSource.getLastCharacters();
-            final entities = localCharacters.map((model) => model.toEntity()).toList();
-            return Right(_applyOverrides(entities));
-          } catch (_) {}
-        }
-        return Left(ErrorHandler.error(e, stackTrace));
-      }
-    } else {
-      // If no internet and asking for first page, show the entire local cache
-      if (page == 1) {
+  Future<Either<BaseResponse, List<Character>>> getAllCharacters(
+    int page, {
+    String? name,
+    String? status,
+    String? species,
+  }) async {
+    try {
+      // Try fetching from remote first
+      final remoteCharacters = await remoteDataSource.getAllCharacters(
+        page,
+        name: name,
+        status: status,
+        species: species,
+      );
+      
+      await localDataSource.cacheCharacters(remoteCharacters);
+      
+      final entities = remoteCharacters.map((model) => model.toEntity()).toList();
+      return Right(_applyOverrides(entities));
+    } catch (e, stackTrace) {
+      // If remote fails, check if we have internet
+      final bool isConnected = await networkInfo.isConnected;
+      
+      // Fallback to local cache only for the first page and if no filters
+      if (page == 1 && name == null && status == null && species == null) {
         try {
           final localCharacters = await localDataSource.getLastCharacters();
-          final entities = localCharacters.map((model) => model.toEntity()).toList();
-          return Right(_applyOverrides(entities));
-        } catch (e, stackTrace) {
-          return Left(ErrorHandler.error(e, stackTrace));
-        }
+          if (localCharacters.isNotEmpty) {
+            final entities = localCharacters.map((model) => model.toEntity()).toList();
+            return Right(_applyOverrides(entities));
+          }
+        } catch (_) {}
       }
-      // If no internet and asking for more pages, return error
-      return Left(ErrorHandler.error('No internet connection', StackTrace.current));
+
+      if (!isConnected) {
+        return Left(ErrorHandler.error('No internet connection', stackTrace));
+      }
+      
+      return Left(ErrorHandler.error(e, stackTrace));
     }
   }
 
@@ -77,6 +81,16 @@ class CharacterRepositoryImpl implements CharacterRepository {
   Future<Either<BaseResponse, void>> updateCharacterOverride(Character character) async {
     try {
       await overrideDataSource.saveOverride(character.toModel());
+      return const Right(null);
+    } catch (e, stackTrace) {
+      return Left(ErrorHandler.error(e, stackTrace));
+    }
+  }
+
+  @override
+  Future<Either<BaseResponse, void>> deleteCharacterOverride(int id) async {
+    try {
+      await overrideDataSource.deleteOverride(id);
       return const Right(null);
     } catch (e, stackTrace) {
       return Left(ErrorHandler.error(e, stackTrace));

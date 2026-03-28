@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CharacterState {
 
- List<Character> get characters; int get currentPage; bool get isLoadingMore; bool get isLastPage; bool get isLoading; String? get errorMessage;
+ List<Character> get characters; Map<String, List<Character>> get cache; Map<String, bool> get isLastPageCache; int get currentPage; bool get isLoadingMore; bool get isLastPage; bool get isLoading; String? get errorMessage; String? get searchName; String? get statusFilter; String? get speciesFilter;
 /// Create a copy of CharacterState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CharacterStateCopyWith<CharacterState> get copyWith => _$CharacterStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterState&&const DeepCollectionEquality().equals(other.characters, characters)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.isLastPage, isLastPage) || other.isLastPage == isLastPage)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CharacterState&&const DeepCollectionEquality().equals(other.characters, characters)&&const DeepCollectionEquality().equals(other.cache, cache)&&const DeepCollectionEquality().equals(other.isLastPageCache, isLastPageCache)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.isLastPage, isLastPage) || other.isLastPage == isLastPage)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.searchName, searchName) || other.searchName == searchName)&&(identical(other.statusFilter, statusFilter) || other.statusFilter == statusFilter)&&(identical(other.speciesFilter, speciesFilter) || other.speciesFilter == speciesFilter));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(characters),currentPage,isLoadingMore,isLastPage,isLoading,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(characters),const DeepCollectionEquality().hash(cache),const DeepCollectionEquality().hash(isLastPageCache),currentPage,isLoadingMore,isLastPage,isLoading,errorMessage,searchName,statusFilter,speciesFilter);
 
 @override
 String toString() {
-  return 'CharacterState(characters: $characters, currentPage: $currentPage, isLoadingMore: $isLoadingMore, isLastPage: $isLastPage, isLoading: $isLoading, errorMessage: $errorMessage)';
+  return 'CharacterState(characters: $characters, cache: $cache, isLastPageCache: $isLastPageCache, currentPage: $currentPage, isLoadingMore: $isLoadingMore, isLastPage: $isLastPage, isLoading: $isLoading, errorMessage: $errorMessage, searchName: $searchName, statusFilter: $statusFilter, speciesFilter: $speciesFilter)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CharacterStateCopyWith<$Res>  {
   factory $CharacterStateCopyWith(CharacterState value, $Res Function(CharacterState) _then) = _$CharacterStateCopyWithImpl;
 @useResult
 $Res call({
- List<Character> characters, int currentPage, bool isLoadingMore, bool isLastPage, bool isLoading, String? errorMessage
+ List<Character> characters, Map<String, List<Character>> cache, Map<String, bool> isLastPageCache, int currentPage, bool isLoadingMore, bool isLastPage, bool isLoading, String? errorMessage, String? searchName, String? statusFilter, String? speciesFilter
 });
 
 
@@ -62,14 +62,19 @@ class _$CharacterStateCopyWithImpl<$Res>
 
 /// Create a copy of CharacterState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? characters = null,Object? currentPage = null,Object? isLoadingMore = null,Object? isLastPage = null,Object? isLoading = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? characters = null,Object? cache = null,Object? isLastPageCache = null,Object? currentPage = null,Object? isLoadingMore = null,Object? isLastPage = null,Object? isLoading = null,Object? errorMessage = freezed,Object? searchName = freezed,Object? statusFilter = freezed,Object? speciesFilter = freezed,}) {
   return _then(_self.copyWith(
 characters: null == characters ? _self.characters : characters // ignore: cast_nullable_to_non_nullable
-as List<Character>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
+as List<Character>,cache: null == cache ? _self.cache : cache // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Character>>,isLastPageCache: null == isLastPageCache ? _self.isLastPageCache : isLastPageCache // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,isLastPage: null == isLastPage ? _self.isLastPage : isLastPage // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,searchName: freezed == searchName ? _self.searchName : searchName // ignore: cast_nullable_to_non_nullable
+as String?,statusFilter: freezed == statusFilter ? _self.statusFilter : statusFilter // ignore: cast_nullable_to_non_nullable
+as String?,speciesFilter: freezed == speciesFilter ? _self.speciesFilter : speciesFilter // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -155,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Character> characters,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Character> characters,  Map<String, List<Character>> cache,  Map<String, bool> isLastPageCache,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage,  String? searchName,  String? statusFilter,  String? speciesFilter)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CharacterState() when $default != null:
-return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage);case _:
+return $default(_that.characters,_that.cache,_that.isLastPageCache,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage,_that.searchName,_that.statusFilter,_that.speciesFilter);case _:
   return orElse();
 
 }
@@ -176,10 +181,10 @@ return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isL
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Character> characters,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Character> characters,  Map<String, List<Character>> cache,  Map<String, bool> isLastPageCache,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage,  String? searchName,  String? statusFilter,  String? speciesFilter)  $default,) {final _that = this;
 switch (_that) {
 case _CharacterState():
-return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage);case _:
+return $default(_that.characters,_that.cache,_that.isLastPageCache,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage,_that.searchName,_that.statusFilter,_that.speciesFilter);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +201,10 @@ return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isL
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Character> characters,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Character> characters,  Map<String, List<Character>> cache,  Map<String, bool> isLastPageCache,  int currentPage,  bool isLoadingMore,  bool isLastPage,  bool isLoading,  String? errorMessage,  String? searchName,  String? statusFilter,  String? speciesFilter)?  $default,) {final _that = this;
 switch (_that) {
 case _CharacterState() when $default != null:
-return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage);case _:
+return $default(_that.characters,_that.cache,_that.isLastPageCache,_that.currentPage,_that.isLoadingMore,_that.isLastPage,_that.isLoading,_that.errorMessage,_that.searchName,_that.statusFilter,_that.speciesFilter);case _:
   return null;
 
 }
@@ -211,7 +216,7 @@ return $default(_that.characters,_that.currentPage,_that.isLoadingMore,_that.isL
 
 
 class _CharacterState implements CharacterState {
-  const _CharacterState({final  List<Character> characters = const [], this.currentPage = 1, this.isLoadingMore = false, this.isLastPage = false, this.isLoading = true, this.errorMessage}): _characters = characters;
+  const _CharacterState({final  List<Character> characters = const [], final  Map<String, List<Character>> cache = const {}, final  Map<String, bool> isLastPageCache = const {}, this.currentPage = 1, this.isLoadingMore = false, this.isLastPage = false, this.isLoading = true, this.errorMessage, this.searchName, this.statusFilter, this.speciesFilter}): _characters = characters,_cache = cache,_isLastPageCache = isLastPageCache;
   
 
  final  List<Character> _characters;
@@ -221,11 +226,28 @@ class _CharacterState implements CharacterState {
   return EqualUnmodifiableListView(_characters);
 }
 
+ final  Map<String, List<Character>> _cache;
+@override@JsonKey() Map<String, List<Character>> get cache {
+  if (_cache is EqualUnmodifiableMapView) return _cache;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_cache);
+}
+
+ final  Map<String, bool> _isLastPageCache;
+@override@JsonKey() Map<String, bool> get isLastPageCache {
+  if (_isLastPageCache is EqualUnmodifiableMapView) return _isLastPageCache;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_isLastPageCache);
+}
+
 @override@JsonKey() final  int currentPage;
 @override@JsonKey() final  bool isLoadingMore;
 @override@JsonKey() final  bool isLastPage;
 @override@JsonKey() final  bool isLoading;
 @override final  String? errorMessage;
+@override final  String? searchName;
+@override final  String? statusFilter;
+@override final  String? speciesFilter;
 
 /// Create a copy of CharacterState
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +259,16 @@ _$CharacterStateCopyWith<_CharacterState> get copyWith => __$CharacterStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterState&&const DeepCollectionEquality().equals(other._characters, _characters)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.isLastPage, isLastPage) || other.isLastPage == isLastPage)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CharacterState&&const DeepCollectionEquality().equals(other._characters, _characters)&&const DeepCollectionEquality().equals(other._cache, _cache)&&const DeepCollectionEquality().equals(other._isLastPageCache, _isLastPageCache)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.isLastPage, isLastPage) || other.isLastPage == isLastPage)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.searchName, searchName) || other.searchName == searchName)&&(identical(other.statusFilter, statusFilter) || other.statusFilter == statusFilter)&&(identical(other.speciesFilter, speciesFilter) || other.speciesFilter == speciesFilter));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_characters),currentPage,isLoadingMore,isLastPage,isLoading,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_characters),const DeepCollectionEquality().hash(_cache),const DeepCollectionEquality().hash(_isLastPageCache),currentPage,isLoadingMore,isLastPage,isLoading,errorMessage,searchName,statusFilter,speciesFilter);
 
 @override
 String toString() {
-  return 'CharacterState(characters: $characters, currentPage: $currentPage, isLoadingMore: $isLoadingMore, isLastPage: $isLastPage, isLoading: $isLoading, errorMessage: $errorMessage)';
+  return 'CharacterState(characters: $characters, cache: $cache, isLastPageCache: $isLastPageCache, currentPage: $currentPage, isLoadingMore: $isLoadingMore, isLastPage: $isLastPage, isLoading: $isLoading, errorMessage: $errorMessage, searchName: $searchName, statusFilter: $statusFilter, speciesFilter: $speciesFilter)';
 }
 
 
@@ -257,7 +279,7 @@ abstract mixin class _$CharacterStateCopyWith<$Res> implements $CharacterStateCo
   factory _$CharacterStateCopyWith(_CharacterState value, $Res Function(_CharacterState) _then) = __$CharacterStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<Character> characters, int currentPage, bool isLoadingMore, bool isLastPage, bool isLoading, String? errorMessage
+ List<Character> characters, Map<String, List<Character>> cache, Map<String, bool> isLastPageCache, int currentPage, bool isLoadingMore, bool isLastPage, bool isLoading, String? errorMessage, String? searchName, String? statusFilter, String? speciesFilter
 });
 
 
@@ -274,14 +296,19 @@ class __$CharacterStateCopyWithImpl<$Res>
 
 /// Create a copy of CharacterState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? characters = null,Object? currentPage = null,Object? isLoadingMore = null,Object? isLastPage = null,Object? isLoading = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? characters = null,Object? cache = null,Object? isLastPageCache = null,Object? currentPage = null,Object? isLoadingMore = null,Object? isLastPage = null,Object? isLoading = null,Object? errorMessage = freezed,Object? searchName = freezed,Object? statusFilter = freezed,Object? speciesFilter = freezed,}) {
   return _then(_CharacterState(
 characters: null == characters ? _self._characters : characters // ignore: cast_nullable_to_non_nullable
-as List<Character>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
+as List<Character>,cache: null == cache ? _self._cache : cache // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Character>>,isLastPageCache: null == isLastPageCache ? _self._isLastPageCache : isLastPageCache // ignore: cast_nullable_to_non_nullable
+as Map<String, bool>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,isLastPage: null == isLastPage ? _self.isLastPage : isLastPage // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,searchName: freezed == searchName ? _self.searchName : searchName // ignore: cast_nullable_to_non_nullable
+as String?,statusFilter: freezed == statusFilter ? _self.statusFilter : statusFilter // ignore: cast_nullable_to_non_nullable
+as String?,speciesFilter: freezed == speciesFilter ? _self.speciesFilter : speciesFilter // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

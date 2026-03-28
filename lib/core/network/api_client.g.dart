@@ -20,9 +20,19 @@ class _ApiClient implements ApiClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseResponse<List<CharacterModel>>> getCharacters(int? page) async {
+  Future<BaseResponse<List<CharacterModel>>> getCharacters(
+    int? page,
+    String? name,
+    String? status,
+    String? species,
+  ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'page': page};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'name': name,
+      r'status': status,
+      r'species': species,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;

@@ -6,6 +6,7 @@ abstract class CharacterOverrideLocalDataSource {
   Future<void> saveOverride(CharacterModel character);
   CharacterModel? getOverride(int id);
   bool hasOverride(int id);
+  Future<void> deleteOverride(int id);
 }
 
 class CharacterOverrideLocalDataSourceImpl implements CharacterOverrideLocalDataSource {
@@ -31,5 +32,10 @@ class CharacterOverrideLocalDataSourceImpl implements CharacterOverrideLocalData
   @override
   bool hasOverride(int id) {
     return box.containsKey(id.toString());
+  }
+
+  @override
+  Future<void> deleteOverride(int id) async {
+    await box.delete(id.toString());
   }
 }

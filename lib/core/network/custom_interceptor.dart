@@ -33,7 +33,7 @@ class CustomInterceptors extends InterceptorsWrapper {
     }
 
     final wrappedData = {
-      "data": dataToWrap,
+      "results": dataToWrap,
       "status_code": response.statusCode ?? 0,
       "message": response.statusMessage ?? "",
     };

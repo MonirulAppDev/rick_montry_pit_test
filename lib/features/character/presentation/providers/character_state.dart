@@ -7,10 +7,15 @@ part 'character_state.freezed.dart';
 abstract class CharacterState with _$CharacterState {
   const factory CharacterState({
     @Default([]) List<Character> characters,
+    @Default({}) Map<String, List<Character>> cache,
+    @Default({}) Map<String, bool> isLastPageCache,
     @Default(1) int currentPage,
     @Default(false) bool isLoadingMore,
     @Default(false) bool isLastPage,
     @Default(true) bool isLoading,
     String? errorMessage,
+    String? searchName,
+    String? statusFilter,
+    String? speciesFilter,
   }) = _CharacterState;
 }
