@@ -7,11 +7,13 @@ import '../providers/favorite_provider.dart';
 class CharacterCard extends ConsumerWidget {
   final Character character;
   final VoidCallback onTap;
+  final String heroPrefix;
 
   const CharacterCard({
     super.key,
     required this.character,
     required this.onTap,
+    this.heroPrefix = 'character',
   });
 
   @override
@@ -45,7 +47,7 @@ class CharacterCard extends ConsumerWidget {
                     ClipRRect(
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                       child: Hero(
-                        tag: 'character-${character.id}',
+                        tag: '$heroPrefix-${character.id}',
                         child: character.image.isEmpty
                             ? Image.asset(
                                 'assets/images/No_Image_Available.jpg',

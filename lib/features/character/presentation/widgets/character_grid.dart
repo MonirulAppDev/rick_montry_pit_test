@@ -10,11 +10,13 @@ import '../../../../core/common/widgets/offline_widget.dart';
 class CharacterGrid extends ConsumerWidget {
   final CharacterState state;
   final ScrollController scrollController;
+  final String heroPrefix;
 
   const CharacterGrid({
     super.key,
     required this.state,
     required this.scrollController,
+    this.heroPrefix = 'character',
   });
 
   @override
@@ -82,12 +84,15 @@ class CharacterGrid extends ConsumerWidget {
                 final character = state.characters[index];
                 return CharacterCard(
                   character: character,
+                  heroPrefix: heroPrefix,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            CharacterDetailPage(character: character),
+                        builder: (context) => CharacterDetailPage(
+                          character: character,
+                          heroPrefix: heroPrefix,
+                        ),
                       ),
                     );
                   },

@@ -6,6 +6,7 @@ import '../models/character_model.dart';
 abstract class CharacterLocalDataSource {
   Future<List<CharacterModel>> getLastCharacters();
   Future<void> cacheCharacters(List<CharacterModel> charactersToCache);
+  Future<CharacterModel?> getCharacterById(int id);
 }
 
 const _cachedCharacters = 'CACHED_CHARACTERS';
@@ -44,5 +45,20 @@ class CharacterLocalDataSourceImpl implements CharacterLocalDataSource {
     } else {
       throw CacheException();
     }
+  }
+
+  @override
+  Future<CharacterModel?> getCharacterById(int id) async {
+    final jsonString = box.get(_cachedCharacters);
+    if (jsonString != null) {
+      final List decoded = json.decode(jsonString);
+      final characters = decoded.map((item) => CharacterModel.fromJson(item)).toList();
+      try {
+        return characters.firstWhere((element) => element.id == id);
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 }

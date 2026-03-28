@@ -186,6 +186,21 @@ class CharacterNotifier extends StateNotifier<CharacterState> {
       }
       return c;
     }).toList();
-    state = state.copyWith(characters: updatedCharacters);
+
+    // Also update the cache to ensure consistency across all loaded pages
+    final updatedCache = Map<String, List<Character>>.from(state.cache);
+    updatedCache.forEach((key, list) {
+      updatedCache[key] = list.map((c) {
+        if (c.id == updatedCharacter.id) {
+          return updatedCharacter;
+        }
+        return c;
+      }).toList();
+    });
+
+    state = state.copyWith(
+      characters: updatedCharacters,
+      cache: updatedCache,
+    );
   }
 }

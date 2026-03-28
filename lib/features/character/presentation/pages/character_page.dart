@@ -92,6 +92,7 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
             child: CharacterGrid(
               state: characterState,
               scrollController: _scrollController,
+              heroPrefix: 'home',
             ),
           ),
         ],

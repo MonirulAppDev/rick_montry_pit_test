@@ -56,17 +56,34 @@ class CharacterRepositoryImpl implements CharacterRepository {
     } catch (e, stackTrace) {
       final bool isConnected = await networkInfo.isConnected;
       
-      if (page == 1 && name == null && status == null && species == null) {
+      if (!isConnected) {
         try {
           final localCharacters = await localDataSource.getLastCharacters();
           if (localCharacters.isNotEmpty) {
-            final entities = localCharacters.map((model) => model.toEntity()).toList();
-            return Right(_applyOverrides(entities));
+            var filteredEntities = localCharacters.map((model) => model.toEntity()).toList();
+            
+            // Apply filters locally if offline
+            if (name != null) {
+              filteredEntities = filteredEntities.where((c) => c.name.toLowerCase().contains(name.toLowerCase())).toList();
+            }
+            if (status != null) {
+              filteredEntities = filteredEntities.where((c) => c.status.toLowerCase() == status.toLowerCase()).toList();
+            }
+            if (species != null) {
+              filteredEntities = filteredEntities.where((c) => c.species.toLowerCase().contains(species.toLowerCase())).toList();
+            }
+
+            // Local pagination (simulated)
+            final int startIndex = (page - 1) * 20;
+            if (startIndex < filteredEntities.length) {
+              final int endIndex = (startIndex + 20) > filteredEntities.length ? filteredEntities.length : startIndex + 20;
+              final paginatedEntities = filteredEntities.sublist(startIndex, endIndex);
+              return Right(_applyOverrides(paginatedEntities));
+            } else {
+              return const Right([]); // No more pages offline
+            }
           }
         } catch (_) {}
-      }
-
-      if (!isConnected) {
         return Left(ErrorHandler.error('No internet connection', stackTrace));
       }
       

@@ -37,10 +37,12 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
     _speciesController = TextEditingController(text: widget.character.species);
     _typeController = TextEditingController(text: widget.character.type);
     _genderController = TextEditingController(text: widget.character.gender);
-    _originController =
-        TextEditingController(text: widget.character.origin.name);
-    _locationController =
-        TextEditingController(text: widget.character.location.name);
+    _originController = TextEditingController(
+      text: widget.character.origin.name,
+    );
+    _locationController = TextEditingController(
+      text: widget.character.location.name,
+    );
   }
 
   @override
@@ -71,9 +73,13 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
       url: widget.character.url,
       created: widget.character.created,
       origin: CharacterLocation(
-          name: _originController.text, url: widget.character.origin.url),
+        name: _originController.text,
+        url: widget.character.origin.url,
+      ),
       location: CharacterLocation(
-          name: _locationController.text, url: widget.character.location.url),
+        name: _locationController.text,
+        url: widget.character.location.url,
+      ),
       episode: widget.character.episode,
     );
 
@@ -83,8 +89,9 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
       result.fold(
         (failure) {
           setState(() => _isLoading = false);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(failure.message)));
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(failure.message)));
         },
         (_) {
           // Update local state in providers
@@ -111,9 +118,10 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2)),
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
             )
           else
             IconButton(onPressed: _save, icon: const Icon(Icons.check_rounded)),
@@ -126,33 +134,40 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
           child: Column(
             children: [
               CharacterEditField(
-                  label: 'Name',
-                  controller: _nameController,
-                  icon: Icons.person_rounded),
+                label: 'Name',
+                controller: _nameController,
+                icon: Icons.person_rounded,
+              ),
               CharacterEditField(
-                  label: 'Status',
-                  controller: _statusController,
-                  icon: Icons.info_outline_rounded),
+                label: 'Status',
+                controller: _statusController,
+                icon: Icons.info_outline_rounded,
+              ),
               CharacterEditField(
-                  label: 'Species',
-                  controller: _speciesController,
-                  icon: Icons.fingerprint_rounded),
+                label: 'Species',
+                controller: _speciesController,
+                icon: Icons.fingerprint_rounded,
+              ),
               CharacterEditField(
-                  label: 'Type',
-                  controller: _typeController,
-                  icon: Icons.bubble_chart_outlined),
+                label: 'Type',
+                controller: _typeController,
+                icon: Icons.bubble_chart_outlined,
+              ),
               CharacterEditField(
-                  label: 'Gender',
-                  controller: _genderController,
-                  icon: Icons.wc_rounded),
+                label: 'Gender',
+                controller: _genderController,
+                icon: Icons.wc_rounded,
+              ),
               CharacterEditField(
-                  label: 'Origin Name',
-                  controller: _originController,
-                  icon: Icons.public_rounded),
+                label: 'Origin Name',
+                controller: _originController,
+                icon: Icons.public_rounded,
+              ),
               CharacterEditField(
-                  label: 'Location Name',
-                  controller: _locationController,
-                  icon: Icons.location_on_rounded),
+                label: 'Location Name',
+                controller: _locationController,
+                icon: Icons.location_on_rounded,
+              ),
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
@@ -162,10 +177,16 @@ class _EditCharacterPageState extends ConsumerState<EditCharacterPage> {
                     backgroundColor: const Color(0xFF6B38FB),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  child: const Text('Save Changes',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    'Save Changes',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ],

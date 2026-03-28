@@ -84,12 +84,15 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                     final character = filteredFavorites[index];
                     return CharacterCard(
                       character: character,
+                      heroPrefix: 'fav',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                CharacterDetailPage(character: character),
+                            builder: (context) => CharacterDetailPage(
+                              character: character,
+                              heroPrefix: 'fav',
+                            ),
                           ),
                         );
                       },

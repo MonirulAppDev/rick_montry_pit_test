@@ -12,8 +12,13 @@ import 'edit_character_page.dart';
 
 class CharacterDetailPage extends ConsumerStatefulWidget {
   final Character character;
+  final String heroPrefix;
 
-  const CharacterDetailPage({super.key, required this.character});
+  const CharacterDetailPage({
+    super.key,
+    required this.character,
+    this.heroPrefix = 'character',
+  });
 
   @override
   ConsumerState<CharacterDetailPage> createState() => _CharacterDetailPageState();
@@ -89,7 +94,7 @@ class _CharacterDetailPageState extends ConsumerState<CharacterDetailPage> {
                 ),
               ),
               background: Hero(
-                tag: 'character-${_character.id}',
+                tag: '${widget.heroPrefix}-${_character.id}',
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
