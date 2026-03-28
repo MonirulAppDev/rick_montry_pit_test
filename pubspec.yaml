@@ -1,0 +1,45 @@
+name: rick_montry_pit_test
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.9
+  flutter_riverpod: ^3.3.1
+  get_it: ^9.2.1
+  dartz: 0.10.1
+  equatable: ^2.0.8
+  dio: ^5.9.2
+  retrofit: ^4.9.2
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+  flutter_dotenv: ^6.0.0
+  hive: 2.2.3
+  hive_flutter: 1.1.0
+  internet_connection_checker: ^3.0.1
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.13.1
+  retrofit_generator: ^10.2.3
+  freezed: ^3.2.5
+  json_serializable: ^6.13.1
+  mockito: ^5.4.6
+  http_mock_adapter: 0.6.1
+
+dependency_overrides:
+  test_api: 0.7.11
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
