@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Rick and Morty Clean Architecture',
+      title: 'Rick and Morty',
       debugShowCheckedModeBanner: false,
       theme: BaseTheme.lightTheme,
       darkTheme: BaseTheme.darkTheme,

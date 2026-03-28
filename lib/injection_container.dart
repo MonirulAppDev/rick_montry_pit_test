@@ -70,10 +70,8 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<FavoriteRepository>(
-    () => FavoriteRepositoryImpl(
-      localDataSource: sl(),
-      overrideDataSource: sl(),
-    ),
+    () =>
+        FavoriteRepositoryImpl(localDataSource: sl(), overrideDataSource: sl()),
   );
 
   // Data sources
@@ -90,6 +88,8 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<CharacterOverrideLocalDataSource>(
-    () => CharacterOverrideLocalDataSourceImpl(box: sl(instanceName: 'overrides')),
+    () => CharacterOverrideLocalDataSourceImpl(
+      box: sl(instanceName: 'overrides'),
+    ),
   );
 }
