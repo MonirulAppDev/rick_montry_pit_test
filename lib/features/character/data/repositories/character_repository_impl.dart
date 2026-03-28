@@ -20,36 +20,44 @@ class CharacterRepositoryImpl implements CharacterRepository {
   });
 
   @override
-  Future<Either<BaseResponse, List<Character>>> getAllCharacters() async {
+  Future<Either<BaseResponse, List<Character>>> getAllCharacters(int page) async {
     final bool isConnected = await networkInfo.isConnected;
     
     if (isConnected) {
       try {
-        final remoteCharacters = await remoteDataSource.getAllCharacters();
-        await localDataSource.cacheCharacters(remoteCharacters);
+        final remoteCharacters = await remoteDataSource.getAllCharacters(page);
+        
+        // Cache only the first page for offline-first experience
+        if (page == 1) {
+          await localDataSource.cacheCharacters(remoteCharacters);
+        }
+        
         final entities = remoteCharacters.map((model) => model.toEntity()).toList();
         return Right(entities);
       } catch (e, stackTrace) {
-        // Even if connected, remote fetch might fail (timeout, server error, etc.)
-        // Fallback to local cache
+        // Fallback to local cache only for the first page
+        if (page == 1) {
+          try {
+            final localCharacters = await localDataSource.getLastCharacters();
+            final entities = localCharacters.map((model) => model.toEntity()).toList();
+            return Right(entities);
+          } catch (_) {}
+        }
+        return Left(ErrorHandler.error(e, stackTrace));
+      }
+    } else {
+      // If no internet and asking for first page, show cache
+      if (page == 1) {
         try {
           final localCharacters = await localDataSource.getLastCharacters();
           final entities = localCharacters.map((model) => model.toEntity()).toList();
           return Right(entities);
-        } catch (_) {
+        } catch (e, stackTrace) {
           return Left(ErrorHandler.error(e, stackTrace));
         }
       }
-    } else {
-      // Not connected, immediately go to local cache
-      try {
-        final localCharacters = await localDataSource.getLastCharacters();
-        final entities = localCharacters.map((model) => model.toEntity()).toList();
-        return Right(entities);
-      } catch (e, stackTrace) {
-        // No internet and no cache
-        return Left(ErrorHandler.error(e, stackTrace));
-      }
+      // If no internet and asking for more pages, return error
+      return Left(ErrorHandler.error('No internet connection', StackTrace.current));
     }
   }
 }

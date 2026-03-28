@@ -1,30 +1,55 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import '../../../../injection_container.dart';
-import '../../domain/entities/character.dart';
 import '../../domain/usecases/get_all_characters.dart';
+import 'character_state.dart';
 
 final charactersProvider =
-    StateNotifierProvider<CharacterNotifier, AsyncValue<List<Character>>>((
-      ref,
-    ) {
+    StateNotifierProvider<CharacterNotifier, CharacterState>((ref) {
       return CharacterNotifier(sl<GetAllCharacters>());
     });
 
-class CharacterNotifier extends StateNotifier<AsyncValue<List<Character>>> {
+class CharacterNotifier extends StateNotifier<CharacterState> {
   final GetAllCharacters getAllCharacters;
 
-  CharacterNotifier(this.getAllCharacters) : super(const AsyncValue.loading()) {
+  CharacterNotifier(this.getAllCharacters) : super(const CharacterState()) {
     fetchCharacters();
   }
 
   Future<void> fetchCharacters() async {
-    state = const AsyncValue.loading();
-    final result = await getAllCharacters();
+    state = state.copyWith(isLoading: true, errorMessage: null, currentPage: 1);
+    final result = await getAllCharacters(page: 1);
     result.fold(
-      (failure) =>
-          state = AsyncValue.error(failure.message, StackTrace.current),
-      (characters) => state = AsyncValue.data(characters),
+      (failure) => state = state.copyWith(
+        isLoading: false,
+        errorMessage: failure.message,
+      ),
+      (characters) => state = state.copyWith(
+        isLoading: false,
+        characters: characters,
+        isLastPage: characters.isEmpty,
+      ),
     );
+  }
+
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || state.isLastPage) return;
+
+    state = state.copyWith(isLoadingMore: true);
+    final nextPage = state.currentPage + 1;
+    final result = await getAllCharacters(page: nextPage);
+
+    result.fold((failure) => state = state.copyWith(isLoadingMore: false), (
+      newCharacters,
+    ) {
+      if (newCharacters.isEmpty) {
+        state = state.copyWith(isLoadingMore: false, isLastPage: true);
+      } else {
+        state = state.copyWith(
+          isLoadingMore: false,
+          characters: [...state.characters, ...newCharacters],
+          currentPage: nextPage,
+        );
+      }
+    });
   }
 }

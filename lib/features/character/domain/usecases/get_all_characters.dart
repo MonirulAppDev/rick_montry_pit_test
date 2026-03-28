@@ -8,7 +8,7 @@ class GetAllCharacters {
 
   GetAllCharacters(this.repository);
 
-  Future<Either<BaseResponse, List<Character>>> call() async {
-    return await repository.getAllCharacters();
+  Future<Either<BaseResponse, List<Character>>> call({int page = 1}) async {
+    return await repository.getAllCharacters(page);
   }
 }

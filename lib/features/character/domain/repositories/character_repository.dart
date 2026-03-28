@@ -3,5 +3,5 @@ import '../../../../core/common/models/base_response.dart';
 import '../entities/character.dart';
 
 abstract class CharacterRepository {
-  Future<Either<BaseResponse, List<Character>>> getAllCharacters();
+  Future<Either<BaseResponse, List<Character>>> getAllCharacters(int page);
 }
