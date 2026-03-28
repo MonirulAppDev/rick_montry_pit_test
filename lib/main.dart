@@ -10,6 +10,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('characters');
   await Hive.openBox('favorites');
+  await Hive.openBox('character_overrides');
   await dotenv.load(fileName: ".env");
   await di.init();
   runApp(const ProviderScope(child: MyApp()));

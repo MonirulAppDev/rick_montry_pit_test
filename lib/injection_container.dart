@@ -16,6 +16,8 @@ import 'package:rick_montry_pit_test/features/character/data/repositories/favori
 import 'package:rick_montry_pit_test/features/character/domain/repositories/favorite_repository.dart';
 import 'package:rick_montry_pit_test/features/character/domain/usecases/toggle_favorite.dart';
 import 'package:rick_montry_pit_test/features/character/domain/usecases/get_favorite_characters.dart';
+import 'package:rick_montry_pit_test/features/character/data/datasources/character_override_local_data_source.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/update_character_override.dart';
 
 final sl = GetIt.instance;
 
@@ -29,8 +31,10 @@ Future<void> init() async {
   // Hive
   final characterBox = Hive.box('characters');
   final favoritesBox = Hive.box('favorites');
+  final overridesBox = Hive.box('character_overrides');
   sl.registerLazySingleton(() => characterBox);
   sl.registerLazySingleton(() => favoritesBox, instanceName: 'favorites');
+  sl.registerLazySingleton(() => overridesBox, instanceName: 'overrides');
 
   // Dio
   final dio = Dio(
@@ -51,18 +55,23 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAllCharacters(sl()));
   sl.registerLazySingleton(() => ToggleFavorite(sl()));
   sl.registerLazySingleton(() => GetFavoriteCharacters(sl()));
+  sl.registerLazySingleton(() => UpdateCharacterOverride(sl()));
 
   // Repository
   sl.registerLazySingleton<CharacterRepository>(
     () => CharacterRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
+      overrideDataSource: sl(),
       networkInfo: sl(),
     ),
   );
 
   sl.registerLazySingleton<FavoriteRepository>(
-    () => FavoriteRepositoryImpl(localDataSource: sl()),
+    () => FavoriteRepositoryImpl(
+      localDataSource: sl(),
+      overrideDataSource: sl(),
+    ),
   );
 
   // Data sources
@@ -76,5 +85,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<FavoriteLocalDataSource>(
     () => FavoriteLocalDataSourceImpl(box: sl(instanceName: 'favorites')),
+  );
+
+  sl.registerLazySingleton<CharacterOverrideLocalDataSource>(
+    () => CharacterOverrideLocalDataSourceImpl(box: sl(instanceName: 'overrides')),
   );
 }

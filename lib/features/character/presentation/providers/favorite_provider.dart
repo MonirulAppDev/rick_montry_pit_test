@@ -46,4 +46,13 @@ class FavoriteNotifier extends StateNotifier<List<Character>> {
   bool isFavorite(int id) {
     return _repository.isFavorite(id);
   }
+
+  void updateLocalCharacter(Character updatedCharacter) {
+    state = state.map((c) {
+      if (c.id == updatedCharacter.id) {
+        return updatedCharacter;
+      }
+      return c;
+    }).toList();
+  }
 }

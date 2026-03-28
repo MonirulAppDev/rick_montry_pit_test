@@ -1,4 +1,6 @@
+import 'package:rick_montry_pit_test/features/character/domain/entities/character.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:rick_montry_pit_test/core/network/network_info.dart';
 import '../../../../injection_container.dart';
 import '../../domain/usecases/get_all_characters.dart';
 import 'character_state.dart';
@@ -23,11 +25,14 @@ class CharacterNotifier extends StateNotifier<CharacterState> {
         isLoading: false,
         errorMessage: failure.message,
       ),
-      (characters) => state = state.copyWith(
-        isLoading: false,
-        characters: characters,
-        isLastPage: characters.isEmpty,
-      ),
+      (characters) async {
+        final bool isConnected = await sl<NetworkInfo>().isConnected;
+        state = state.copyWith(
+          isLoading: false,
+          characters: characters,
+          isLastPage: characters.isEmpty || !isConnected, // If offline, we consider it a 'last page' of available data
+        );
+      },
     );
   }
 
@@ -51,5 +56,15 @@ class CharacterNotifier extends StateNotifier<CharacterState> {
         );
       }
     });
+  }
+
+  void updateLocalCharacter(Character updatedCharacter) {
+    final updatedCharacters = state.characters.map((c) {
+      if (c.id == updatedCharacter.id) {
+        return updatedCharacter;
+      }
+      return c;
+    }).toList();
+    state = state.copyWith(characters: updatedCharacters);
   }
 }

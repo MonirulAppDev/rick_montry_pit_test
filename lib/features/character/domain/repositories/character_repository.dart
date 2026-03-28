@@ -4,4 +4,5 @@ import '../entities/character.dart';
 
 abstract class CharacterRepository {
   Future<Either<BaseResponse, List<Character>>> getAllCharacters(int page);
+  Future<Either<BaseResponse, void>> updateCharacterOverride(Character character);
 }

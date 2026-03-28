@@ -17,7 +17,22 @@ class CharacterLocalDataSourceImpl implements CharacterLocalDataSource {
 
   @override
   Future<void> cacheCharacters(List<CharacterModel> charactersToCache) async {
-    final jsonList = charactersToCache.map((character) => character.toJson()).toList();
+    final existingJson = box.get(_cachedCharacters);
+    List<CharacterModel> allCharacters = [];
+
+    if (existingJson != null) {
+      final List decoded = json.decode(existingJson);
+      allCharacters = decoded.map((item) => CharacterModel.fromJson(item)).toList();
+    }
+
+    // Merge lists using a Map to avoid duplicates by ID
+    final characterMap = {for (var c in allCharacters) c.id: c};
+    for (var char in charactersToCache) {
+      characterMap[char.id] = char;
+    }
+
+    final mergedList = characterMap.values.toList();
+    final jsonList = mergedList.map((character) => character.toJson()).toList();
     await box.put(_cachedCharacters, json.encode(jsonList));
   }
 
