@@ -25,8 +25,6 @@ class CustomInterceptors extends InterceptorsWrapper {
 
     final dynamic originalData = response.data;
 
-    // Rick and Morty API returns results in a 'results' field.
-    // We extract it so BaseResponse<List<T>> gets the actual list.
     dynamic dataToWrap = originalData;
     if (originalData is Map && originalData.containsKey('results')) {
       dataToWrap = originalData['results'];

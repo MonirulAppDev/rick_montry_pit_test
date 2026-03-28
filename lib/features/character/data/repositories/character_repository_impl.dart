@@ -42,7 +42,6 @@ class CharacterRepositoryImpl implements CharacterRepository {
     String? species,
   }) async {
     try {
-      // Try fetching from remote first
       final remoteCharacters = await remoteDataSource.getAllCharacters(
         page,
         name: name,
@@ -55,10 +54,8 @@ class CharacterRepositoryImpl implements CharacterRepository {
       final entities = remoteCharacters.map((model) => model.toEntity()).toList();
       return Right(_applyOverrides(entities));
     } catch (e, stackTrace) {
-      // If remote fails, check if we have internet
       final bool isConnected = await networkInfo.isConnected;
       
-      // Fallback to local cache only for the first page and if no filters
       if (page == 1 && name == null && status == null && species == null) {
         try {
           final localCharacters = await localDataSource.getLastCharacters();

@@ -25,7 +25,6 @@ class CharacterLocalDataSourceImpl implements CharacterLocalDataSource {
       allCharacters = decoded.map((item) => CharacterModel.fromJson(item)).toList();
     }
 
-    // Merge lists using a Map to avoid duplicates by ID
     final characterMap = {for (var c in allCharacters) c.id: c};
     for (var char in charactersToCache) {
       characterMap[char.id] = char;

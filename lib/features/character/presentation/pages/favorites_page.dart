@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/favorite_provider.dart';
 import '../widgets/character_card.dart';
+import '../widgets/favorite_empty_state.dart';
 import 'character_detail_page.dart';
 
 class FavoritesPage extends ConsumerStatefulWidget {
@@ -67,27 +68,9 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
         ],
       ),
       body: favorites.isEmpty
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.favorite_border_rounded,
-                      size: 80, color: Colors.white10),
-                  SizedBox(height: 16),
-                  Text(
-                    'No favorites yet',
-                    style: TextStyle(color: Colors.white38, fontSize: 18),
-                  ),
-                ],
-              ),
-            )
+          ? const FavoriteEmptyState()
           : filteredFavorites.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No characters found',
-                    style: TextStyle(color: Colors.white38, fontSize: 18),
-                  ),
-                )
+              ? const FavoriteNoResultsState()
               : GridView.builder(
                   padding: const EdgeInsets.all(16),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
