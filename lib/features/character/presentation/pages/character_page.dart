@@ -31,7 +31,8 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
 
   void _onScroll() {
     if (_scrollController.hasClients) {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 400) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 400) {
         ref.read(charactersProvider.notifier).loadMore();
       }
     }
@@ -41,11 +42,11 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
   Widget build(BuildContext context) {
     final characterState = ref.watch(charactersProvider);
 
-    // Listen to state changes to handle cases where new data arrives and we 
+    // Listen to state changes to handle cases where new data arrives and we
     // are still near the bottom, but no scroll notification was triggered.
     ref.listen(charactersProvider, (previous, next) {
       if (previous?.isLoadingMore == true && next.isLoadingMore == false) {
-        // If we finished loading more, check if we're still near the bottom 
+        // If we finished loading more, check if we're still near the bottom
         // in case the newly added items didn't push the threshold far enough.
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _onScroll();
@@ -54,17 +55,14 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Characters'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Characters'), centerTitle: true),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final crossAxisCount = constraints.maxWidth > 900
               ? 5
               : constraints.maxWidth > 600
-                  ? 3
-                  : 2;
+              ? 3
+              : 2;
 
           return RefreshIndicator(
             color: const Color(0xFF6B38FB),
@@ -116,7 +114,8 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
         mainAxisSpacing: 24,
         childAspectRatio: 0.7,
       ),
-      itemCount: state.characters.length + (state.isLoadingMore ? crossAxisCount : 0),
+      itemCount:
+          state.characters.length + (state.isLoadingMore ? crossAxisCount : 0),
       itemBuilder: (context, index) {
         if (index < state.characters.length) {
           final character = state.characters[index];
@@ -126,7 +125,8 @@ class _CharacterPageState extends ConsumerState<CharacterPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CharacterDetailPage(character: character),
+                  builder: (context) =>
+                      CharacterDetailPage(character: character),
                 ),
               );
             },

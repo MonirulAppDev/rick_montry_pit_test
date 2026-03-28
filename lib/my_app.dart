@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/themes/base_theme.dart';
-import 'features/character/presentation/pages/character_page.dart';
+import 'features/character/presentation/pages/main_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: BaseTheme.lightTheme,
       darkTheme: BaseTheme.darkTheme,
       themeMode: ThemeMode.dark,
-      home: const CharacterPage(),
+      home: const MainPage(),
     );
   }
 }

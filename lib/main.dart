@@ -9,6 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('characters');
+  await Hive.openBox('favorites');
   await dotenv.load(fileName: ".env");
   await di.init();
   runApp(const ProviderScope(child: MyApp()));

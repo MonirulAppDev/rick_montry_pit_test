@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/character.dart';
+import '../providers/favorite_provider.dart';
 
-class CharacterCard extends StatelessWidget {
+class CharacterCard extends ConsumerWidget {
   final Character character;
   final VoidCallback onTap;
 
@@ -13,7 +15,10 @@ class CharacterCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoriteProvider.notifier).isFavorite(character.id);
+    ref.watch(favoriteProvider); // Rebuild when favorites change
+
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -103,6 +108,17 @@ class CharacterCard extends StatelessWidget {
                               ),
                             ),
                           ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 4,
+                      left: 4,
+                      child: IconButton(
+                        onPressed: () => ref.read(favoriteProvider.notifier).toggle(character),
+                        icon: Icon(
+                          isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                          color: isFavorite ? Colors.red : Colors.white,
                         ),
                       ),
                     ),

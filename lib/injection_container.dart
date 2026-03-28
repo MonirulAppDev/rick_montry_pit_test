@@ -6,11 +6,16 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rick_montry_pit_test/core/network/api_client.dart';
 import 'package:rick_montry_pit_test/core/network/custom_interceptor.dart';
 import 'package:rick_montry_pit_test/core/network/network_info.dart';
-import 'features/character/data/datasources/character_local_data_source.dart';
-import 'features/character/data/datasources/character_remote_data_source.dart';
-import 'features/character/data/repositories/character_repository_impl.dart';
-import 'features/character/domain/repositories/character_repository.dart';
-import 'features/character/domain/usecases/get_all_characters.dart';
+import 'package:rick_montry_pit_test/features/character/data/datasources/character_local_data_source.dart';
+import 'package:rick_montry_pit_test/features/character/data/datasources/character_remote_data_source.dart';
+import 'package:rick_montry_pit_test/features/character/data/repositories/character_repository_impl.dart';
+import 'package:rick_montry_pit_test/features/character/domain/repositories/character_repository.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/get_all_characters.dart';
+import 'package:rick_montry_pit_test/features/character/data/datasources/favorite_local_data_source.dart';
+import 'package:rick_montry_pit_test/features/character/data/repositories/favorite_repository_impl.dart';
+import 'package:rick_montry_pit_test/features/character/domain/repositories/favorite_repository.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/toggle_favorite.dart';
+import 'package:rick_montry_pit_test/features/character/domain/usecases/get_favorite_characters.dart';
 
 final sl = GetIt.instance;
 
@@ -23,7 +28,9 @@ Future<void> init() async {
 
   // Hive
   final characterBox = Hive.box('characters');
+  final favoritesBox = Hive.box('favorites');
   sl.registerLazySingleton(() => characterBox);
+  sl.registerLazySingleton(() => favoritesBox, instanceName: 'favorites');
 
   // Dio
   final dio = Dio(
@@ -42,6 +49,8 @@ Future<void> init() async {
 
   // Use cases
   sl.registerLazySingleton(() => GetAllCharacters(sl()));
+  sl.registerLazySingleton(() => ToggleFavorite(sl()));
+  sl.registerLazySingleton(() => GetFavoriteCharacters(sl()));
 
   // Repository
   sl.registerLazySingleton<CharacterRepository>(
@@ -52,6 +61,10 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<FavoriteRepository>(
+    () => FavoriteRepositoryImpl(localDataSource: sl()),
+  );
+
   // Data sources
   sl.registerLazySingleton<CharacterRemoteDataSource>(
     () => CharacterRemoteDataSourceImpl(apiClient: sl()),
@@ -59,5 +72,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<CharacterLocalDataSource>(
     () => CharacterLocalDataSourceImpl(box: sl()),
+  );
+
+  sl.registerLazySingleton<FavoriteLocalDataSource>(
+    () => FavoriteLocalDataSourceImpl(box: sl(instanceName: 'favorites')),
   );
 }

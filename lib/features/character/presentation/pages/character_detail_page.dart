@@ -1,20 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/character.dart';
+import '../providers/favorite_provider.dart';
 
-class CharacterDetailPage extends StatelessWidget {
+class CharacterDetailPage extends ConsumerWidget {
   final Character character;
 
   const CharacterDetailPage({super.key, required this.character});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoriteProvider.notifier).isFavorite(character.id);
+    ref.watch(favoriteProvider); // Rebuild when favorites change
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 400.0,
             pinned: true,
+            actions: [
+              IconButton(
+                onPressed: () => ref.read(favoriteProvider.notifier).toggle(character),
+                icon: Icon(
+                  isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  color: isFavorite ? Colors.red : Colors.white,
+                ),
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 character.name,
@@ -118,18 +132,9 @@ class CharacterDetailPage extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'ID: #${character.id}',
-                style: const TextStyle(color: Colors.white30, fontSize: 12, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                character.species,
-                style: const TextStyle(color: Colors.white70, fontSize: 14),
-              ),
-            ],
+          Text(
+            '#${character.id.toString().padLeft(3, '0')}',
+            style: const TextStyle(color: Colors.white30, fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2),
           ),
         ],
       ),
@@ -141,26 +146,45 @@ class CharacterDetailPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'About',
+          'Specifications',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
         ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _specItem('Gender', character.gender, Icons.person_outline_rounded)),
+            const SizedBox(width: 12),
+            Expanded(child: _specItem('Species', character.species, Icons.fingerprint_rounded)),
+          ],
+        ),
         const SizedBox(height: 12),
-        _infoItem('Gender', character.gender, Icons.person_outline),
-        _infoItem('Species', character.species, Icons.category_outlined),
-        _infoItem('Type', character.type.isEmpty ? 'Unknown' : character.type, Icons.info_outline),
+        _specItem('Type', character.type.isEmpty ? 'Unknown' : character.type, Icons.bubble_chart_outlined, isFullWidth: true),
       ],
     );
   }
 
-  Widget _infoItem(String label, String value, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+  Widget _specItem(String label, String value, IconData icon, {bool isFullWidth = false}) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF252530),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+      ),
       child: Row(
+        mainAxisSize: isFullWidth ? MainAxisSize.max : MainAxisSize.min,
         children: [
-          Icon(icon, color: const Color(0xFF6B38FB), size: 20),
-          const SizedBox(width: 12),
-          Text('$label: ', style: const TextStyle(color: Colors.white54, fontSize: 16)),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+          Icon(icon, color: const Color(0xFF6B38FB), size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: const TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.bold)),
+                Text(value, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
+              ],
+            ),
+          ),
         ],
       ),
     );
